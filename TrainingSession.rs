@@ -6,9 +6,9 @@ struct Word {
 
 pub trait Palindrome {
     fn input(&mut self);
-    fn verify(&self) -> bool;
+    fn verify(&mut self) -> bool;
     fn reverse(s: &str) -> String;
-    fn output(&self);
+    fn output(&mut self);
 }
 
 impl Palindrome for Word {
@@ -18,13 +18,14 @@ impl Palindrome for Word {
         std::io::stdin().read_line(&mut _word).expect("Unable to read entered data");
         //println!("The word you entered is {}", _word);
         _word.pop();        //remove the trailing newline
-        self.backwards = Self::reverse(&_word);
+        //self.backwards = Self::reverse(&_word);
         self.original = _word;
 
     }
 
-    fn verify(&self) -> bool {
-        let verification_result = self.original.eq(&self.backwards);
+    fn verify(&mut self) -> bool {
+        self.backwards = Self::reverse(&self.original);
+        let verification_result = self.original.eq_ignore_ascii_case(&self.backwards);
         verification_result
     }
 
@@ -32,8 +33,8 @@ impl Palindrome for Word {
        s.chars().rev().collect()
     }
 
-    fn output(&self) {
-        if self.verify() {
+    fn output(&mut self) {
+        if Self::verify(self) {
             println!("The Great Palindromizer has determined that your word {} is a palindrome", self.original)
         }
         else {
